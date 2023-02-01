@@ -1,0 +1,85 @@
+@page
+@model FreshFarmMarket.Pages.Register
+
+@{
+    ViewData["Title"] = "Registration Form";
+}
+
+<!DOCTYPE html>
+<html>
+<body>
+<h1 class="display-3">@ViewData["Title"]</h1>
+<form class="mt-3" method="post">
+    <div class="row mb-3">
+        <label class="col-sm-2 col-form-label" asp-for="FullName">Full Name</label>
+        <div class="col-sm-10">
+            <input class="form-control" />
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="CreditCardNo">Credit Card No</label>
+        <div class="col-sm-10">
+            <input id="ccFormatter" class="form-control" maxlength="16" placeholder="1234-1234-1234-1234"/>
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="Gender">Gender</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="radio" id="Female" name="Female" value="female"/>
+            <label for="Female">Female</label>
+            <input class="form-control" type="radio" id="Male" name="Male" value="male"/>
+            <label for="Male">Male</label>
+            <input class="form-control" type="radio" id="Others" name="Others" value="others"/>
+            <label for="Others">Others</label>
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="MobileNo">Mobile No</label>
+        <div class="col-sm-10">
+            <input class="form-control" maxlength="8"/>
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="DeliveryAddress">Delivery Address</label>
+        <div class="col-sm-10">
+            <input class="form-control" />
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="EmailAddress">Email Address</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="email"/>
+                </div>
+        <label class="col-sm-2 col-form-label" asp-for="Password">Password</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="password"/>  
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="ConfirmPassword">Confirm Password</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="password"/>
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="Photo">Photo</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="file" accept="image/vnd.sealedmedia.softseal.jpg"/>
+        </div>
+        <label class="col-sm-2 col-form-label" asp-for="AboutMe">About Me</label>
+        <div class="col-sm-10">
+            <input class="form-control" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+</body>
+<script>
+        function cc_format(value) {
+            var v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+            var matches = v.match(/\d{4,16}/g);
+            var match = matches && matches[0] || ''
+            var parts = []
+            for (i=0, len=match.length; i<len; i+=4) {
+                parts.push(match.substring(i, i+4))
+            }
+            if (parts.length) {
+                return parts.join('-')
+            } else {
+                return value
+            }
+        }
+
+        onload = function() {
+            document.getElementById('ccFormatter').oninput = function() {
+                this.value = cc_format(this.value)
+            }
+        }
+    </script>
+</html>
