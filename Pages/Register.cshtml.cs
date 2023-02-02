@@ -1,32 +1,29 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
+using FreshFarmMarket.Models;
+using FreshFarmMarket.Models.DTO;
 
 namespace FreshFarmMarket.Pages;
 
 public class Register : PageModel
 {
     [BindProperty]
-    public string FullName { get; set; } = string.Empty;
+    public RegisterModel registerModel { get; set; }
     [BindProperty]
-    public string CreditCardNo { get; set; } = string.Empty;
-    [BindProperty]
-    public string Gender { get; set; } = string.Empty;
-    [BindProperty]
-    public string MobileNo { get; set; } = string.Empty;
-    [BindProperty]
-    public string DeliveryAddress { get; set; } = string.Empty;
-    [BindProperty]
-    public string EmailAddress { get; set; } = string.Empty;
-    [BindProperty]
-    public string Password { get; set; } = string.Empty;
-    [BindProperty]
-    public string ConfirmPassword { get; set; } = string.Empty;
-    [BindProperty]
-    public string Photo { get; set; } = string.Empty;
-    [BindProperty]
-    public string AboutMe { get; set; } = string.Empty;
+    public IFormFile? PhotoUpload { get; set; }
 
+    private UserManager<AppUser> _userManager;
+    private IWebHostEnvironment _environment;
+
+    public Register(UserManager<AppUser> userManager, IWebHostEnvironment environment)
+    {
+        _userManager = userManager;
+        _environment = environment;
+    }
     public IActionResult OnPost()
     {
         //// Registration Form
