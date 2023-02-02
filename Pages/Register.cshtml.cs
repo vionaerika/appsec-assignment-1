@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Encodings.Web;
+
 using FreshFarmMarket.Models;
 using FreshFarmMarket.Models.DTO;
 
@@ -24,34 +27,83 @@ public class Register : PageModel
         _userManager = userManager;
         _environment = environment;
     }
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
-        //// Registration Form
-        // encrypt email input in the register form
-        // pesudo code
-        // encrpyted_email = encrypt(email)
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = await _userManager.FindByEmailAsync(registerModel.Email);
 
-        // attempt to fetch existing data from database using encrypted email
-        // for sql statement, please use prepared statements, below line is example ONLY
-        // prepared statement reference: https://nyplms.polite.edu.sg/d2l/le/enhancedSequenceViewer/168707?url=https%3A%2F%2F5ff0cccf-42fe-41ae-a18f-a4e0f77dec33.sequences.api.brightspace.com%2F168707%2Factivity%2F5487882%3FfilterOnDatesAndDepth%3D1
-        // isExistingEmail = f"SELECT user from USER where email = {encrpyted_email}"
+                if (existingUser != null)
+                {
+                    TempData["FlashMessage.Text"] = "Email Exist.";
+                    TempData["FlashMessage.Type"] = "danger";
+                    return Page();
+                }
 
-        // if email exist in database, prmopt user to enter again
+                var dataProtectionProvider = DataProtectionProvider.Create("EncryptData");
+                var protector = dataProtectionProvider.CreateProtector("MySecretKey");
+                var imgUrl = "";
 
-        // else if email does not exist
-        // consolidate all form fields data 
-        // encrypt credit card number
-        // check photo is jpg
-        // encode about me values
+                if (PhotoUpload != null)
+                {
+                    if (PhotoUpload.ContentType == "image/jpeg" || PhotoUpload.ContentType == "image/jpg")
+                    {
+                        var uploadsFolder = "uploads/images";
+                        var imageFile = Guid.NewGuid() + Path.GetExtension(PhotoUpload.FileName);
+                        var imagePath = Path.Combine(_environment.ContentRootPath, "wwwroot", uploadsFolder, imageFile);
+                        using var fileStream = new FileStream(imagePath, FileMode.Create);
+                        await PhotoUpload.CopyToAsync(fileStream);
+                        imgUrl = string.Format("/{0}/{1}", uploadsFolder, imageFile);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Upload", "Only JPG File Types.");
+                        return Page();
+                    }
+                }
+                else
+                {
+                    var uploadsFolder = "uploads/images";
+                    var imageFile = "default_pic.jpg";
+                    Path.Combine(_environment.ContentRootPath, "wwwroot", uploadsFolder, imageFile);
+                    imgUrl = string.Format("/{0}/{1}", uploadsFolder, imageFile);
+                }
 
-        //// Securing credentials
-        // check that user is using strong password
+                //byte[] salt = new byte[16];
+                //RandomNumberGenerator.Create().GetBytes(salt);
 
-        //// Session
-        // after checking password, and everything is successfully saved to database
-        // create a session for the user
-        // session management reference: https://nyplms.polite.edu.sg/content/enforced/168707-22S2-IT2163/csfiles/home_dir/courses/2021S2-IT2163/L04%20-%20Session%20Management%20and%20Security.pdf?_&d2lSessionVal=c5U1QEWT0N0vW7aZoy1KTeqA6&ou=168707
 
-        return Page();
+                var user = new AppUser()
+                {
+                    FullName = registerModel.FullName,
+                    CreditCardNo = protector.Protect(registerModel.CreditCardNo),
+                    Gender = registerModel.Gender,
+                    MobileNo = registerModel.MobileNo,
+                    DeliveryAddress = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.DeliveryAddress)),
+                    Email = registerModel.Email,
+                    UserName = registerModel.Email,
+                    Photo = Convert.ToBase64String(Encoding.UTF8.GetBytes(imgUrl)),
+                    AboutMe = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.AboutMe)),
+                    TwoFactorEnabled = true
+                };
+
+                var res = await _userManager.CreateAsync(user, registerModel.Password);
+                if (res.Succeeded)
+                {
+                    Console.WriteLine($"RES: {res}");
+                    return RedirectToPage("/Login");
+                }
+                TempData["FlashMessage.Type"] = "danger";
+                TempData["FlashMessage.Text"] = "Account Creation Failed";
+                return Page();
+            }
+            return Page();
+        }
+        catch (Exception)
+        {
+            return RedirectToPage("/Errors/500");
+        }
     }
 }
