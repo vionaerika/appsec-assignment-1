@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Identity;
-using WebApp_Core_Identity.Model;
+using FreshFarmMarket.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AuthDbContext>();
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
+builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache(); //save session in memory
-builder.Services.AddSession(options=>
+builder.Services.AddSession(options =>
 {
-options.IdleTimeout = TimeSpan.FromSeconds(30);
-} )
+    options.IdleTimeout = TimeSpan.FromSeconds(30);
+});
 
 var app = builder.Build();
 

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using MySqlConnector;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 
