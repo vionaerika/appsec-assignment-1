@@ -66,14 +66,10 @@ public class Register : PageModel
                 else
                 {
                     var uploadsFolder = "uploads/images";
-                    var imageFile = "default_pic.jpg";
+                    var imageFile = "default_user.jpg";
                     Path.Combine(_environment.ContentRootPath, "wwwroot", uploadsFolder, imageFile);
                     imgUrl = string.Format("/{0}/{1}", uploadsFolder, imageFile);
                 }
-
-                //byte[] salt = new byte[16];
-                //RandomNumberGenerator.Create().GetBytes(salt);
-
 
                 var user = new AppUser()
                 {
@@ -86,23 +82,36 @@ public class Register : PageModel
                     UserName = registerModel.Email,
                     Photo = Convert.ToBase64String(Encoding.UTF8.GetBytes(imgUrl)),
                     AboutMe = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.AboutMe)),
-                    TwoFactorEnabled = true
+                    // TwoFactorEnabled = true
                 };
 
+                Console.WriteLine($"USER FullName : {user.FullName}");
+                Console.WriteLine($"USER CreditCardNo : {user.CreditCardNo}");
+                Console.WriteLine($"USER Gender : {user.Gender}");
+                Console.WriteLine($"USER MobileNo : {user.MobileNo}");
+                Console.WriteLine($"USER DeliveryAddress : {user.DeliveryAddress}");
+                Console.WriteLine($"USER Email : {user.Email}");
+                Console.WriteLine($"USER UserName : {user.UserName}");
+                Console.WriteLine($"USER Photo : {user.Photo}");
+                Console.WriteLine($"USER AboutMe : {user.AboutMe}");
                 var res = await _userManager.CreateAsync(user, registerModel.Password);
+                Console.WriteLine("LINE 98");
                 if (res.Succeeded)
                 {
                     Console.WriteLine($"RES: {res}");
                     return RedirectToPage("/Login");
                 }
+                Console.WriteLine($"RES FAILED: {res}");
                 TempData["FlashMessage.Type"] = "danger";
                 TempData["FlashMessage.Text"] = "Account Creation Failed";
                 return Page();
             }
+            Console.WriteLine("test 103");
             return Page();
         }
-        catch (Exception)
+        catch (Exception exc)
         {
+            Console.WriteLine($"Exceptions {exc}");
             return RedirectToPage("/Errors/500");
         }
     }

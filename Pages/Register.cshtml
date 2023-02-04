@@ -1,7 +1,7 @@
 @page
 @model FreshFarmMarket.Pages.Register
 
-<form id="register_form" enctype="multipart/form-data" method="post">
+<form id="registration_form" enctype="multipart/form-data" method="post">
   <div class="row">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <h2>Register</h2>
@@ -9,13 +9,13 @@
     <div class="col-md-8">
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.FullName"></label>
-        <input id="fullname-input" class="form-control" aria-required="true" asp-for="registerModel.FullName" />
-        <span id="fullname-validation" class="text-danger" asp-validation-for="registerModel.FullName"></span>
+        <input id="fullname_input" class="form-control" aria-required="true" asp-for="registerModel.FullName" />
+        <span id="fullname_validation" class="text-danger" asp-validation-for="registerModel.FullName"></span>
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.CreditCardNo"></label>
-        <input id="creditcard-input" class="form-control" aria-required="true" asp-for="registerModel.CreditCardNo" />
-        <span id="creditcard-validation" class="text-danger" asp-validation-for="registerModel.CreditCardNo"></span>
+        <input id="creditcardno_input" class="form-control" aria-required="true" asp-for="registerModel.CreditCardNo" />
+        <span id="creditcardno_validation" class="text-danger" asp-validation-for="registerModel.CreditCardNo"></span>
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.Gender"></label>
@@ -32,8 +32,8 @@
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.MobileNo"></label>
-        <input id="mobile-input" class="form-control" aria-required="true" asp-for="registerModel.MobileNo" />
-        <span id="mobileno-validation" class="text-danger" asp-validation-for="registerModel.MobileNo"></span>
+        <input id="mobileno_input" class="form-control" aria-required="true" asp-for="registerModel.MobileNo" />
+        <span id="mobileno_validation" class="text-danger" asp-validation-for="registerModel.MobileNo"></span>
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.DeliveryAddress"></label>
@@ -42,32 +42,31 @@
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.Email"></label>
-        <input id="email-input" class="form-control" aria-required="true" type="email" asp-for="registerModel.Email" />
-        <span id="email-validation" class="text-danger" asp-validation-for="registerModel.Email"></span>
+        <input id="email_input" class="form-control" aria-required="true" type="email" asp-for="registerModel.Email" />
+        <span id="email_validation" class="text-danger" asp-validation-for="registerModel.Email"></span>
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.Password"></label>
-        <input id="password-input" class="form-control" autocomplete="new-password" aria-required="true"
-          asp-for="registerModel.Password" />
-        <span id="password-validation" class="text-danger" asp-validation-for="registerModel.Password"></span>
+        <input id="password_input" class="form-control" aria-required="true" asp-for="registerModel.Password" />
+        <span id="password_validation" class="text-danger" asp-validation-for="registerModel.Password"></span>
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.ConfirmPassword"></label>
-        <input class="form-control" autocomplete="new-password" aria-required="true"
-          asp-for="registerModel.ConfirmPassword" />
+        <input class="form-control" aria-required="true" asp-for="registerModel.ConfirmPassword" />
         <span class="text-danger" asp-validation-for="registerModel.ConfirmPassword"></span>
+      </div>
+      <div class="mb-3">
+        <label class="col-form-label" asp-for="PhotoUpload">Upload Photo</label>
+        <input type="file" class="form-control" accept="image/jpg" asp-for="PhotoUpload" />
+        <span asp-validation-for="PhotoUpload" class="text-danger"></span>
       </div>
       <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.AboutMe"></label>
         <input class="form-control" aria-required="true" asp-for="registerModel.AboutMe" />
         <span class="text-danger" asp-validation-for="registerModel.AboutMe"></span>
       </div>
-      <div class="mb-3">
-        <input type="file" class="form-control" accept="image/jpg" asp-for="PhotoUpload" />
-        <span asp-validation-for="PhotoUpload" class="text-danger"></span>
-      </div>
     </div>
-    <button id="register-submit" type="button" class="btn btn-lg btn-primary">
+    <button id="submit_registration_btn" type="button" class="btn btn-lg btn-primary">
       Register
     </button>
   </div>
@@ -76,58 +75,47 @@
 @section Scripts {
 <script>
   $(document).ready(() => {
-    var regexPwd = new RegExp(
-      "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[#?!@@$%\^&\*\-])(?=.{12,})"
+    const FullNameRegex = new RegExp("[A-z\\s]+");
+    const CreditCardNoRegex = new RegExp("^[0-9]{16}$");
+    const MobileNoRegex = new RegExp("^[0-9]{8}$");
+    const EmailRegex =
+      /^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/;
+    const PasswordRegex = new RegExp(
+      "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@@$!%*?&])[A-Za-z\\d$@@$!%*?&]{12,}$"
     );
-    var regexFN = new RegExp("[A-z ]+");
-    var regexCC = new RegExp("[0-9]{16}");
-    var regexMobile = new RegExp("[0-9]{8}");
-    var regexEmail =
-      /^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*@@((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$/;
 
-    $("#register-submit").click(() => {
-      var resPwd = regexPwd.test($("#password-input").val());
-      var resFN = regexFN.test($("#fullname-input").val().trim());
-      var resCC = regexCC.test($("#creditcard-input").val());
-      var resMobile = regexMobile.test($("#mobile-input").val());
-      var resEmail = regexEmail.test($("#email-input").val());
+    $("#submit_registration_btn").click(() => {
+      const isValidFullname = FullNameRegex.test($("#fullname_input").val().trim());
+      const isValidCreditCardNo = CreditCardNoRegex.test($("#creditcardno_input").val());
+      const isValidMobileNo = MobileNoRegex.test($("#mobileno_input").val());
+      const isValidEmail = EmailRegex.test($("#email_input").val());
+      const isValidPassword = PasswordRegex.test($("#password_input").val());
 
-      if (resPwd && resFN && resCC && resMobile && resEmail) {
-        $("#register-form").submit();
+      if (isValidFullname && isValidCreditCardNo && isValidMobileNo && isValidEmail && isValidPassword) {
+        $("#registration_form").submit();
       } else {
-        if (!resPwd) {
-          $("#password-validation").text(
-            "Password requires At least one upper case, at least one lower case, at least one digit, at least one special character (#?!@@$%^&*-), minimum 12 characters"
+        if (!isValidFullname) {
+          $("#fullname_validation").text(
+            "Please enter name with only alphabets and spaces."
           );
-        } else {
-          $("#password-validation").text();
         }
-        console.log(resFN, resCC);
-        if (!resFN) {
-          $("#fullname-validation").text(
-            "Name cannot be empty and can only contain alphabets and space."
+        if (!isValidCreditCardNo) {
+          $("#creditcardno_validation").text(
+            "Please enter credit card number in 16 digits format."
           );
-        } else {
-          $("#fullname-validation").text();
         }
-        if (!resCC) {
-          $("#creditcard-validation").text(
-            "Credit Cards Number Without Spacing. eg: 4444111122223333"
+        if (!isValidMobileNo) {
+          $("#mobileno_validation").text(
+            "Please enter mobile number in 8 digits format."
           );
-        } else {
-          $("#creditcard-validation").text();
         }
-        if (!resMobile) {
-          $("#mobileno-validation").text(
-            "Invalid Mobile Number Format. Please key in eg: 88888888"
+        if (!isValidEmail) {
+          $("#email_validation").text("Please enter email in valid format");
+        }
+        if (!isValidPassword) {
+          $("#password_validation").text(
+            "Please enter password with minimum 12 characters (at least one upper case, at least one lower case, at least one digit, at least one special character (#?!@@$%^&*-)"
           );
-        } else {
-          $("#mobileno-validation").text();
-        }
-        if (!resEmail) {
-          $("#email-validation").text("Invalid Email Format");
-        } else {
-          $("#email-validation").text();
         }
       }
     });
