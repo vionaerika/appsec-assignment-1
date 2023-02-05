@@ -121,7 +121,7 @@ public class Register : PageModel
                     callbackUrl = HtmlEncoder.Default.Encode(callbackUrl!);
                     Console.WriteLine($"Callback {callbackUrl}");
 
-                    var sendEmailSuccess = await _emailSender.SendEmail(user.Email, $"Please confirm your account creation by <a href='{callbackUrl}'>clicking here</a>.");
+                    var sendEmailSuccess = await _emailSender.SendEmail(user.Email, "Welcome to the Fresh Farm Market Family", $"Please confirm your account creation by <a href='{callbackUrl}'>clicking here</a>.");
 
                     if (sendEmailSuccess)
                     {

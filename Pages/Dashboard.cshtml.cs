@@ -14,15 +14,17 @@ namespace FreshFarmMarket.Pages
     public class Dashboard : PageModel
     {
         [BindProperty]
-        public AppUser appUser { get; set; } = new AppUser();
+        public AppUser appUser { get; set; }
         [BindProperty]
         public string Role { get; set; } = string.Empty;
         private UserManager<AppUser> _userManager;
-        public Dashboard(UserManager<AppUser> userManager)
+        private EmailSender _emailSender;
+        public Dashboard(UserManager<AppUser> userManager, EmailSender emailSender)
         {
             _userManager = userManager;
+            _emailSender = emailSender;
         }
-        public async Task<IActionResult> OnGet()
+        public async Task OnGet()
         {
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user); // returns a list
@@ -42,8 +44,31 @@ namespace FreshFarmMarket.Pages
             }
 
             appUser = user;
+        }
+        public async Task<IActionResult> OnPost()
+        {
+            // send password reset email to user
+            // generate and encode token
+            var PasswordResetToken = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+            PasswordResetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(PasswordResetToken));
 
-            return Page();
+            var callbackUrl = Url.Page("/ResetPassword", pageHandler: null, values: new { PasswordResetToken, email = appUser.Email }, protocol: Request.Scheme);
+            callbackUrl = HtmlEncoder.Default.Encode(callbackUrl!);
+
+            var sendEmailSuccess = await _emailSender.SendEmail(appUser.Email, "Reset Password", $"Reset your password <a href='{callbackUrl}'>clicking here</a>.");
+            Console.WriteLine($"sendEmailSuccess: {sendEmailSuccess}");
+
+            if (sendEmailSuccess)
+            {
+                TempData["FlashMessage.Type"] = "text-success";
+                TempData["FlashMessage.Text"] = "Reset Password Email Sent. Please check your email";
+            }
+            else
+            {
+                TempData["FlashMessage.Type"] = "text-danger";
+                TempData["FlashMessage.Text"] = "Email failed to be sent. Please Try Again";
+            }
+            return RedirectToPage("/Dashboard");
         }
     }
 }
