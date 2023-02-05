@@ -18,26 +18,25 @@ namespace FreshFarmMarket.Pages
             _userManager = userManager;
         }
 
-        public IActionResult OnGet(string code, string email)
+        public void OnGet(string code, string email)
         {
             if (code == null || email == null)
             {
                 TempData["FlashMessage.Text"] = "Invalid Password Reset Link";
                 TempData["FlashMessage.Type"] = "text-danger";
-                return RedirectToPage("/Dashboard");
+                RedirectToPage("/Dashboard");
             }
-            else
+            resetPasswordModel = new ResetPasswordModel
             {
-                resetPasswordModel = new ResetPasswordModel
-                {
-                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code)),
-                    Email = email
-                };
-                return Page();
-            }
+                Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code!)),
+                Email = email!
+            };
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            Console.WriteLine($"resetPasswordModel.Code {resetPasswordModel.Code}");
+            Console.WriteLine($"resetPasswordModel.Email {resetPasswordModel.Email}");
+            Console.WriteLine($"resetPasswordModel.Password {resetPasswordModel.Password}");
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email);
@@ -50,17 +49,17 @@ namespace FreshFarmMarket.Pages
                 }
 
                 var result = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Code, resetPasswordModel.Password);
-
+                Console.WriteLine($"result {result}");
                 if (result.Succeeded)
                 {
                     TempData["FlashMessage.Text"] = "Password reset success";
                     TempData["FlashMessage.Type"] = "text-success";
                     return RedirectToPage("/Dashboard");
                 }
-                TempData["FlashMessage.Text"] = "Password reset failed";
-                TempData["FlashMessage.Type"] = "text-danger";
-                return Page();
             }
+            TempData["FlashMessage.Text"] = "Password reset failed";
+            TempData["FlashMessage.Type"] = "text-danger";
+
             return Page();
         }
     }

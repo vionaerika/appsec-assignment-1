@@ -47,16 +47,18 @@ namespace FreshFarmMarket.Pages
         }
         public async Task<IActionResult> OnPost()
         {
+            // get user details
+            var user = await _userManager.GetUserAsync(User);
+
             // send password reset email to user
             // generate and encode token
-            var PasswordResetToken = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+            var PasswordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
             PasswordResetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(PasswordResetToken));
 
-            var callbackUrl = Url.Page("/ResetPassword", pageHandler: null, values: new { PasswordResetToken, email = appUser.Email }, protocol: Request.Scheme);
+            var callbackUrl = Url.Page("/ResetPassword", pageHandler: null, values: new { code = PasswordResetToken, email = user.Email }, protocol: Request.Scheme);
             callbackUrl = HtmlEncoder.Default.Encode(callbackUrl!);
 
-            var sendEmailSuccess = await _emailSender.SendEmail(appUser.Email, "Reset Password", $"Reset your password <a href='{callbackUrl}'>clicking here</a>.");
-            Console.WriteLine($"sendEmailSuccess: {sendEmailSuccess}");
+            var sendEmailSuccess = await _emailSender.SendEmail(user.Email, "Reset Password", $"Reset your password <a href='{callbackUrl}'>clicking here</a>.");
 
             if (sendEmailSuccess)
             {
