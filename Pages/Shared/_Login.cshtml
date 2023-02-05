@@ -1,0 +1,33 @@
+@using Microsoft.AspNetCore.Identity
+@using FreshFarmMarket.Models
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+
+        <li>
+            <a id="manage" class="nav-link text-dark" asp-page="/Dashboard" title="Profile">Welcome, @(user !=null ?
+            @user.FullName:"")!</a>
+        </li>
+        <li>
+            <form id="logout_form" asp-route-redirectUrl="@Url.Page("/Index")" asp-page="/Logout">
+                <button id="logout" class="nav-link text-dark" type="submit">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a class="nav-link text-dark" id="register" asp-page="/Register">Register</a>
+        </li>
+        <li>
+            <a class="nav-link text-dark" id="login" asp-page="/Login">Login</a>
+        </li>
+    }
+</ul>

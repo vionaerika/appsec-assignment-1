@@ -26,7 +26,6 @@ public class Login : PageModel
         {
             if (ModelState.IsValid)
             {
-                Console.WriteLine("test");
                 var res = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, true, lockoutOnFailure: true);
                 if (res.IsLockedOut)
                 {

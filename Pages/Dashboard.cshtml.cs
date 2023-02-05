@@ -36,9 +36,9 @@ namespace FreshFarmMarket.Pages
             user.DeliveryAddress = Encoding.UTF8.GetString(Convert.FromBase64String(user.DeliveryAddress));
             user.CreditCardNo = dataProtector.Unprotect(user.CreditCardNo);
 
-            foreach (var i in roles)
+            foreach (var role in roles)
             {
-                Role += i;
+                Role = role;
             }
 
             appUser = user;

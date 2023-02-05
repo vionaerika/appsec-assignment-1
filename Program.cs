@@ -10,10 +10,9 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = true;
     options.Lockout.AllowedForNewUsers = true;
-    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.MaxFailedAccessAttempts = 3;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 }).AddEntityFrameworkStores<AuthDbContext>();
-
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache(); //save session in memory
 builder.Services.AddSession(options =>
@@ -28,6 +27,7 @@ builder.Services.ConfigureApplicationCookie(Config =>
     Config.AccessDeniedPath = "/Errors/403";
     Config.SlidingExpiration = true;
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,13 +40,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseSession();
 app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapRazorPages();
 
 app.Run();
