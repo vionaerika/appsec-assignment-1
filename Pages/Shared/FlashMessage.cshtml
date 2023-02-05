@@ -1,0 +1,12 @@
+@{
+    string? text = Convert.ToString(TempData["FlashMessage.Text"]);
+    string? cssClass = Convert.ToString(TempData["FlashMessage.Type"]);
+}
+@if (!string.IsNullOrWhiteSpace(text))
+{
+    <div class="@cssClass" style="font-size: 30px; ">
+        <p>
+            @text
+        </p>
+    </div>
+}

@@ -37,35 +37,36 @@ public class Register : PageModel
 
                 if (existingUser != null)
                 {
-                    TempData["FlashMessage.Text"] = "Email Exist.";
-                    TempData["FlashMessage.Type"] = "danger";
+                    TempData["FlashMessage.Text"] = "Email has been used";
+                    TempData["FlashMessage.Type"] = "text-danger";
                     return Page();
                 }
-                var imgUrl = "";
+                var imageRefPath = "";
 
                 if (PhotoUpload != null)
                 {
                     if (PhotoUpload.ContentType == "image/jpeg" || PhotoUpload.ContentType == "image/jpg")
                     {
-                        var uploadsFolder = "uploads/images";
+                        var imageFolder = "uploads/images";
                         var imageFile = Guid.NewGuid() + Path.GetExtension(PhotoUpload.FileName);
-                        var imagePath = Path.Combine(_environment.ContentRootPath, "wwwroot", uploadsFolder, imageFile);
+                        var imagePath = Path.Combine(_environment.ContentRootPath, "wwwroot", imageFolder, imageFile);
                         using var fileStream = new FileStream(imagePath, FileMode.Create);
                         await PhotoUpload.CopyToAsync(fileStream);
-                        imgUrl = string.Format("/{0}/{1}", uploadsFolder, imageFile);
+                        imageRefPath = string.Format("/{0}/{1}", imageFolder, imageFile);
                     }
                     else
                     {
-                        ModelState.AddModelError("Upload", "Only JPG File Types.");
+                        TempData["FlashMessage.Text"] = "Only JPG Image files are allowed";
+                        TempData["FlashMessage.Type"] = "text-danger";
                         return Page();
                     }
                 }
                 else
                 {
-                    var uploadsFolder = "uploads/images";
+                    var imageFolder = "uploads/images";
                     var imageFile = "default_user.jpg";
-                    Path.Combine(_environment.ContentRootPath, "wwwroot", uploadsFolder, imageFile);
-                    imgUrl = string.Format("/{0}/{1}", uploadsFolder, imageFile);
+                    Path.Combine(_environment.ContentRootPath, "wwwroot", imageFolder, imageFile);
+                    imageRefPath = string.Format("/{0}/{1}", imageFolder, imageFile);
                 }
 
                 var dataProtectionProvider = DataProtectionProvider.Create("EncryptData");
@@ -74,39 +75,25 @@ public class Register : PageModel
                 var user = new AppUser()
                 {
                     FullName = registerModel.FullName,
-                    CreditCardNo = dataProtector.Protect(registerModel.CreditCardNo),   
+                    CreditCardNo = dataProtector.Protect(registerModel.CreditCardNo),
                     Gender = registerModel.Gender,
                     MobileNo = registerModel.MobileNo,
                     DeliveryAddress = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.DeliveryAddress)),
                     Email = registerModel.Email,
                     UserName = registerModel.Email,
-                    Photo = Convert.ToBase64String(Encoding.UTF8.GetBytes(imgUrl)),
+                    Photo = Convert.ToBase64String(Encoding.UTF8.GetBytes(imageRefPath)),
                     AboutMe = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.AboutMe)),
                     // TwoFactorEnabled = true
                 };
 
-                Console.WriteLine($"USER FullName : {user.FullName}");
-                Console.WriteLine($"USER CreditCardNo : {user.CreditCardNo}");
-                Console.WriteLine($"USER Gender : {user.Gender}");
-                Console.WriteLine($"USER MobileNo : {user.MobileNo}");
-                Console.WriteLine($"USER DeliveryAddress : {user.DeliveryAddress}");
-                Console.WriteLine($"USER Email : {user.Email}");
-                Console.WriteLine($"USER UserName : {user.UserName}");
-                Console.WriteLine($"USER Photo : {user.Photo}");
-                Console.WriteLine($"USER AboutMe : {user.AboutMe}");
-
                 var res = await _userManager.CreateAsync(user, registerModel.Password);
                 if (res.Succeeded)
                 {
-                    Console.WriteLine($"RES: {res}");
                     return RedirectToPage("/Login");
                 }
-                Console.WriteLine($"RES FAILED: {res}");
-                TempData["FlashMessage.Type"] = "danger";
-                TempData["FlashMessage.Text"] = "Account Creation Failed";
-                return Page();
             }
-            Console.WriteLine("test 103");
+            TempData["FlashMessage.Type"] = "text-danger";
+            TempData["FlashMessage.Text"] = "Account registration failed";
             return Page();
         }
         catch (Exception exc)

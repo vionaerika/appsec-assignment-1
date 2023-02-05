@@ -20,8 +20,38 @@ public class Login : PageModel
         _userManager = userManager;
 
     }
-    public void OnGet()
+    public async Task<IActionResult> OnPost()
     {
-
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                var res = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, true, lockoutOnFailure: true);
+                if (res.IsLockedOut)
+                {
+                    TempData["FlashMessage.Text"] = "Account locked due to multiple failed login attempts";
+                    TempData["FlashMessage.Type"] = "text-danger";
+                    return Page();
+                }
+                if (res.Succeeded)
+                {
+                    return RedirectToPage("/TwoFactor");
+                }
+                else
+                {
+                    TempData["FlashMessage.Text"] = "Invalid credentials";
+                    TempData["FlashMessage.Type"] = "text-danger";
+                    return Page();
+                }
+            }
+            TempData["FlashMessage.Text"] = "Invalid login attempt";
+            TempData["FlashMessage.Type"] = "text-danger";
+            return Page();
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine($"Exceptions {exc}");
+            return RedirectToPage("/Errors/500");
+        }
     }
 }
