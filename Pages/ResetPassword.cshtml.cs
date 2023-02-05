@@ -34,9 +34,6 @@ namespace FreshFarmMarket.Pages
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            Console.WriteLine($"resetPasswordModel.Code {resetPasswordModel.Code}");
-            Console.WriteLine($"resetPasswordModel.Email {resetPasswordModel.Email}");
-            Console.WriteLine($"resetPasswordModel.Password {resetPasswordModel.Password}");
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email);
@@ -49,7 +46,7 @@ namespace FreshFarmMarket.Pages
                 }
 
                 var result = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Code, resetPasswordModel.Password);
-                Console.WriteLine($"result {result}");
+
                 if (result.Succeeded)
                 {
                     TempData["FlashMessage.Text"] = "Password reset success";

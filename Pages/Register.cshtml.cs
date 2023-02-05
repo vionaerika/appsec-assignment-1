@@ -119,7 +119,6 @@ public class Register : PageModel
 
                     var callbackUrl = Url.Page("/Login", pageHandler: null, values: new { userId = user.Id, token = EmailConfirmationToken }, protocol: Request.Scheme);
                     callbackUrl = HtmlEncoder.Default.Encode(callbackUrl!);
-                    Console.WriteLine($"Callback {callbackUrl}");
 
                     var sendEmailSuccess = await _emailSender.SendEmail(user.Email, "Welcome to the Fresh Farm Market Family", $"Please confirm your account creation by <a href='{callbackUrl}'>clicking here</a>.");
 
@@ -139,9 +138,8 @@ public class Register : PageModel
             TempData["FlashMessage.Text"] = "Account registration failed";
             return Page();
         }
-        catch (Exception exc)
+        catch (Exception)
         {
-            Console.WriteLine($"Exceptions {exc}");
             return RedirectToPage("/Errors/500");
         }
     }

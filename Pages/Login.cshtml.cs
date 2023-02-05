@@ -87,9 +87,8 @@ public class Login : PageModel
             TempData["FlashMessage.Type"] = "text-danger";
             return Page();
         }
-        catch (Exception exc)
+        catch (Exception)
         {
-            Console.WriteLine($"Exceptions {exc}");
             return RedirectToPage("/Errors/500");
         }
     }
