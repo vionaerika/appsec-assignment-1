@@ -24,7 +24,6 @@ namespace FreshFarmMarket.Pages
         }
         public async Task<IActionResult> OnGet()
         {
-            Console.WriteLine("ENTERED");
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user); // returns a list
 
