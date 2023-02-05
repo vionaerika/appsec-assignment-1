@@ -2,7 +2,7 @@
 @model FreshFarmMarket.Pages.Logout
 
 @{
-    if (User.Identity.IsAuthenticated)
+    if (User.Identity!.IsAuthenticated)
     {
         <form class="form-inline" asp-page="/Logout" asp-route-redirectUrl="@Url.Page("/Index")" method="post">
             <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Encodings.Web;
 
 using FreshFarmMarket.Models;
@@ -21,12 +22,14 @@ public class Register : PageModel
 
     private UserManager<AppUser> _userManager;
     private RoleManager<IdentityRole> _roleManager;
+    private EmailSender _emailSender;
     private IWebHostEnvironment _environment;
 
-    public Register(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment environment)
+    public Register(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, EmailSender emailSender, IWebHostEnvironment environment)
     {
         _userManager = userManager;
         _roleManager = roleManager;
+        _emailSender = emailSender;
         _environment = environment;
     }
     public async Task<IActionResult> OnPost()
@@ -91,7 +94,6 @@ public class Register : PageModel
                     DeliveryAddress = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.DeliveryAddress)),
                     Photo = Convert.ToBase64String(Encoding.UTF8.GetBytes(imageRefPath)),
                     AboutMe = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.AboutMe)),
-                    // TwoFactorEnabled = true
                 };
 
                 var res = await _userManager.CreateAsync(user, registerModel.Password);
@@ -109,6 +111,26 @@ public class Register : PageModel
                         // attach user to role
                         await _userManager.AddToRoleAsync(user, registerModel.Role);
                     }
+
+                    // send account confirmation email to user
+                    // generate and encode token
+                    var EmailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    EmailConfirmationToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(EmailConfirmationToken));
+
+                    var callbackUrl = Url.Page("/Login", pageHandler: null, values: new { userId = user.Id, token = EmailConfirmationToken }, protocol: Request.Scheme);
+                    callbackUrl = HtmlEncoder.Default.Encode(callbackUrl!);
+                    Console.WriteLine($"Callback {callbackUrl}");
+
+                    var sendEmailSuccess = await _emailSender.SendEmail(user.Email, $"Please confirm your account creation by <a href='{callbackUrl}'>clicking here</a>.");
+
+                    if (sendEmailSuccess)
+                    {
+                        TempData["FlashMessage.Type"] = "text-success";
+                        TempData["FlashMessage.Text"] = $"Account {registerModel.Email} is added. Please check your email";
+                        return RedirectToPage("/Login");
+                    }
+                    TempData["FlashMessage.Type"] = "text-success";
+                    TempData["FlashMessage.Text"] = $"Account {registerModel.Email} is added but email failed to be sent. Please try logging in";
                     return RedirectToPage("/Login");
                 }
             }

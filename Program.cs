@@ -9,11 +9,12 @@ builder.Services.AddDbContext<AuthDbContext>();
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
     options.Lockout.AllowedForNewUsers = true;
     options.Lockout.MaxFailedAccessAttempts = 3;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-}).AddEntityFrameworkStores<AuthDbContext>();
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+}).AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders(); ;
+builder.Services.AddSingleton<EmailSender>();
 builder.Services.AddDistributedMemoryCache(); //save session in memory
 builder.Services.AddSession(options =>
 {

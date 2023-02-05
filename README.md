@@ -43,10 +43,18 @@ dotnet ef database update
 
 # References
 
-1. https://stackoverflow.com/questions/70728537/why-do-i-get-warning-cs8602
-2. https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/suppress-warnings
-3. https://codeasy.net/lesson/input_validation
-4. https://stackoverflow.com/questions/7253601/c-converting-string-variable-to-class-variable
-5. https://www.tutorialsteacher.com/articles/generate-random-numbers-in-csharp
-6. https://stackoverflow.com/questions/852181/c-printing-all-properties-of-an-object
-7. https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.typedescriptor?view=net-6.0
+Send Email with SendGrid
+1. https://www.courier.com/guides/csharp-send-email/
+
+Send SMS with Twilio
+2. https://app.sendgrid.com/twilio/sms
+
+Key generation and data encryption 
+3. https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.dataprotection.dataprotectionprovider.create?view=aspnetcore-7.0
+
+Role-based authorization 
+4. https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-7.0
+
+Callback URL generation
+5. https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.urlhelperextensions.page?view=aspnetcore-7.0
+
