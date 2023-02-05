@@ -20,7 +20,7 @@ namespace FreshFarmMarket.Models.DTO
         [Required, DisplayName("Delivery Address")]
         public string DeliveryAddress { get; set; } = string.Empty;
 
-        [Required, EmailAddress, RegularExpression(@"^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$", ErrorMessage = "Please enter email in valid format")]
+        [Required, DataType(DataType.EmailAddress), RegularExpression(@"^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$", ErrorMessage = "Please enter email in valid format")]
         public string Email { get; set; } = string.Empty;
 
         [Required, DataType(DataType.Password), DisplayName("Password"),

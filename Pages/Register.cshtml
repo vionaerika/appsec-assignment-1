@@ -66,7 +66,7 @@
         <span class="text-danger" asp-validation-for="registerModel.AboutMe"></span>
       </div>
     </div>
-    <button id="submit_registration_btn" type="button" class="btn btn-lg btn-primary">
+    <button id="register_btn" type="button" class="btn btn-lg btn-primary">
       Register
     </button>
   </div>
@@ -84,7 +84,7 @@
       "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@@$!%*?&])[A-Za-z\\d$@@$!%*?&]{12,}$"
     );
 
-    $("#submit_registration_btn").click(() => {
+    $("#register_btn").click(() => {
       const isValidFullname = FullNameRegex.test($("#fullname_input").val().trim());
       const isValidCreditCardNo = CreditCardNoRegex.test($("#creditcardno_input").val());
       const isValidMobileNo = MobileNoRegex.test($("#mobileno_input").val());

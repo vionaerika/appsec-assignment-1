@@ -20,7 +20,5 @@ namespace FreshFarmMarket.Models
         public string Photo { get; set; } = string.Empty;
         [Required]
         public string AboutMe { get; set; } = string.Empty;
-        [Required]
-        public string Salt { get; set; } = string.Empty;
     }
 }

@@ -41,9 +41,6 @@ public class Register : PageModel
                     TempData["FlashMessage.Type"] = "danger";
                     return Page();
                 }
-
-                var dataProtectionProvider = DataProtectionProvider.Create("EncryptData");
-                var protector = dataProtectionProvider.CreateProtector("MySecretKey");
                 var imgUrl = "";
 
                 if (PhotoUpload != null)
@@ -71,10 +68,13 @@ public class Register : PageModel
                     imgUrl = string.Format("/{0}/{1}", uploadsFolder, imageFile);
                 }
 
+                var dataProtectionProvider = DataProtectionProvider.Create("EncryptData");
+                var dataProtector = dataProtectionProvider.CreateProtector("MySecretKey");
+
                 var user = new AppUser()
                 {
                     FullName = registerModel.FullName,
-                    CreditCardNo = protector.Protect(registerModel.CreditCardNo),
+                    CreditCardNo = dataProtector.Protect(registerModel.CreditCardNo),   
                     Gender = registerModel.Gender,
                     MobileNo = registerModel.MobileNo,
                     DeliveryAddress = Convert.ToBase64String(Encoding.UTF8.GetBytes(registerModel.DeliveryAddress)),
@@ -94,8 +94,8 @@ public class Register : PageModel
                 Console.WriteLine($"USER UserName : {user.UserName}");
                 Console.WriteLine($"USER Photo : {user.Photo}");
                 Console.WriteLine($"USER AboutMe : {user.AboutMe}");
+
                 var res = await _userManager.CreateAsync(user, registerModel.Password);
-                Console.WriteLine("LINE 98");
                 if (res.Succeeded)
                 {
                     Console.WriteLine($"RES: {res}");

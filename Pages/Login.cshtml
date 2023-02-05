@@ -1,22 +1,25 @@
 @page
 @model FreshFarmMarket.Pages.Login
 
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-
-<head>
-    <title></title>
-</head>
-
-<body>
-    <div>
-
+<form id="login_form" enctype="multipart/form-data" method="post">
+    <div class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h2>Login</h2>
+        <br />
+        <div class="col-md-8">
+            <div class="mb-3">
+                <label class="col-form-label" asp-for="loginModel.Email"></label>
+                <input class="form-control" aria-required="true" type="email" asp-for="loginModel.Email" />
+                <span class="text-danger" asp-validation-for="loginModel.Email"></span>
+            </div>
+            <div class="mb-3">
+                <label class="col-form-label" asp-for="loginModel.Password"></label>
+                <input class="form-control" aria-required="true" asp-for="loginModel.Password" />
+                <span class="text-danger" asp-validation-for="loginModel.Password"></span>
+            </div>
+        </div>
+        <button id="login_btn" type="button" class="btn btn-lg btn-primary">
+            Login
+        </button>
     </div>
-</body>
-
-</html>
+</form>
