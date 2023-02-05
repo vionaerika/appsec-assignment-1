@@ -34,5 +34,7 @@ namespace FreshFarmMarket.Models.DTO
 
         [Required, DisplayName("About Me")]
         public string AboutMe { get; set; } = string.Empty;
+        [Required, RegularExpression("^(Ravenclaw|Gryffindor|Slytherin)$", ErrorMessage = "Role must be either Ravenclaw or Gryffindor or Slytherin")]
+        public string Role { get; set; } = string.Empty;
     }
 }

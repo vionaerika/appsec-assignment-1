@@ -26,6 +26,7 @@ public class Login : PageModel
         {
             if (ModelState.IsValid)
             {
+                Console.WriteLine("test");
                 var res = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, true, lockoutOnFailure: true);
                 if (res.IsLockedOut)
                 {
@@ -35,7 +36,7 @@ public class Login : PageModel
                 }
                 if (res.Succeeded)
                 {
-                    return RedirectToPage("/TwoFactor");
+                    return RedirectToPage("/Dashboard");
                 }
                 else
                 {

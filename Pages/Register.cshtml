@@ -62,6 +62,23 @@
         <span asp-validation-for="PhotoUpload" class="text-danger"></span>
       </div>
       <div class="mb-3">
+        <label class="col-form-label" asp-for="registerModel.Role"></label>
+        <div>
+          @Html.RadioButtonFor(model => model.registerModel.Role, "Ravenclaw", new {
+          @class = "form-check-input", @checked = true })
+          <label>Ravenclaw</label>
+          <br />
+          @Html.RadioButtonFor(model => model.registerModel.Role, "Gryffindor", new {
+          @class = "form-check-input" })
+          <label>Gryffindor</label>
+          <br />
+          @Html.RadioButtonFor(model => model.registerModel.Role, "Slytherin", new {
+          @class = "form-check-input" })
+          <label>Slytherin</label>
+        </div>
+        <span asp-validation-for="registerModel.Role" class="text-danger"></span>
+      </div>
+      <div class="mb-3">
         <label class="col-form-label" asp-for="registerModel.AboutMe"></label>
         <input class="form-control" aria-required="true" asp-for="registerModel.AboutMe" />
         <span class="text-danger" asp-validation-for="registerModel.AboutMe"></span>

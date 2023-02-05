@@ -1,0 +1,49 @@
+@page
+@model FreshFarmMarket.Pages.Dashboard
+@{
+}
+
+<div class="row">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <h2>DASHBOARD BOTHERFUCKER</h2>
+    <br />
+    <div class="col-md-8">
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.FullName"></label>
+            <input id="fullname_input" class="form-control" aria-required="true" asp-for="appUser.FullName" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.CreditCardNo"></label>
+            <input class="form-control" aria-required="true" asp-for="appUser.CreditCardNo" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.Gender"></label>
+            <input class="form-control" aria-required="true" asp-for="appUser.Gender" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.MobileNo"></label>
+            <input class="form-control" aria-required="true" asp-for="appUser.MobileNo" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.DeliveryAddress"></label>
+            <input class="form-control" aria-required="true" asp-for="appUser.DeliveryAddress" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.Email"></label>
+            <input class="form-control" aria-required="true" type="email" asp-for="appUser.Email" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.Photo"></label>
+            <br />
+            <img style="height:300px;width:300px;object-fit:cover;border: 5px solid #555" src="@Model.appUser.Photo" />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="Role"></label>
+            <input class="form-control" aria-required="true" asp-for="Role" disabled />
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label" asp-for="appUser.AboutMe"></label>
+            <input class="form-control" aria-required="true" asp-for="appUser.AboutMe" disabled />
+        </div>
+    </div>
+</div>

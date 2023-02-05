@@ -1,12 +1,12 @@
 @page
-@model FreshFarmMarket.Pages.Errors.Err500Model
+@model FreshFarmMarket.Pages.Errors.Err403Model
 @{
-    ViewData["title"] = "Internal Server Error";
+    ViewData["title"] = "Forbidden";
 }
 
 <div class="container">
-    <h1>500</h1>
+    <h1>403</h1>
     <p style="font-size: 30px; ">@ViewData["title"]</p>
-    <p>Server Error.</p>
+    <p>You do not have access to this page</p>
     <p>Please navigate back to <a href="/">Home Page</a></p>
 </div>
